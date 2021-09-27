@@ -7,15 +7,28 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import InfoBox from "./Component/InfoBox/InfoBox";
 import Map from "./Component/Map/Map";
+import Table from "./Component/Table/Table";
+import { sortData } from "./Component/util";
 
 function App() {
   // react hook state
-  const [getData, setGetData] = useState("worldwide");
-  const [countries, setCountry] = useState([]);
-  // onchange selected data
-  const handleChange = (event) => {
-    setGetData(event.target.value);
-  };
+  const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState("worldwide");
+  const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
+
+  // workdwide
+  useEffect(() => {
+    const worldWideGet = async () => {
+      await fetch("https://disease.sh/v3/covid-19/all")
+        .then((res) => res.json())
+        .then((result) => {
+          setCountryInfo(result);
+        });
+    };
+    worldWideGet();
+  }, []);
+
   // api call get data
   useEffect(() => {
     const getCountryData = async () => {
@@ -26,11 +39,31 @@ function App() {
             name: data.country,
             value: data.countryInfo.iso2,
           }));
-          setCountry(coun);
+
+          const getSortData = sortData(result);
+          setTableData(getSortData);
+          setCountries(coun);
         });
     };
     getCountryData();
   }, []);
+
+  // onchange selected data
+  const handleChange = async (event) => {
+    const countryCode = event.target.value;
+
+    const url =
+      countryCode === "worldwide"
+        ? "https://disease.sh/v3/covid-19/all"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+
+    await fetch(url)
+      .then((res) => res.json())
+      .then((result) => {
+        setCountryInfo(result);
+        setCountry(countryCode);
+      });
+  };
 
   return (
     <div className="app">
@@ -42,8 +75,8 @@ function App() {
             <InputLabel>Age</InputLabel>
             <Select
               variant="outlined"
-              value={getData}
               label="Age"
+              value={country}
               onChange={handleChange}
             >
               <MenuItem value="worldwide">Worldwide</MenuItem>
@@ -55,18 +88,33 @@ function App() {
             </Select>
           </FormControl>
         </div>
+
         {/* info box */}
         <div className="app__stats">
-          <InfoBox title="Coronavirus Cases" cases={120} total="2000" />
-          <InfoBox title="Revovered" cases={100} total="1000" />
-          <InfoBox title="Deaths" cases={150} total="1500" />
+          <InfoBox
+            title="Coronavirus Cases"
+            cases={countryInfo.todayCases}
+            total={countryInfo.cases}
+          />
+          <InfoBox
+            title="Revovered"
+            cases={countryInfo.todayRecovered}
+            total={countryInfo.recovered}
+          />
+          <InfoBox
+            title="Deaths"
+            cases={countryInfo.todayDeaths}
+            total={countryInfo.deaths}
+          />
         </div>
         {/* Map */}
         <Map />
       </div>
+
       <Card className="app__right">
         {/* table */}
         <h3>Live Cases by Country</h3>
+        <Table countries={tableData} />
         {/* graph */}
         <h3>Worldwide new cases</h3>
       </Card>
