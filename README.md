@@ -1,6 +1,6 @@
 # Getting Started with React App
 
-Live Project Link [Create React App](https://covid-19-project-2021.web.app/).
+Live Project Link [covid-19-Tracker](https://covid-19-project-2021.web.app/).
 
 ## Live Project
 
