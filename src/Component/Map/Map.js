@@ -3,7 +3,7 @@ import React from "react";
 const Map = () => {
   return (
     <div>
-      <h3>this is map</h3>
+      <h3></h3>
     </div>
   );
 };
