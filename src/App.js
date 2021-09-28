@@ -6,6 +6,7 @@ import Select from "@mui/material/Select";
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import InfoBox from "./Component/InfoBox/InfoBox";
+import LineGraph from "./Component/LineGraph/LineGraph";
 import Map from "./Component/Map/Map";
 import Table from "./Component/Table/Table";
 import { sortData } from "./Component/util";
@@ -72,10 +73,10 @@ function App() {
         <div className="app__header">
           <h2>This is Covid-19 Tracker</h2>
           <FormControl className="app__dropdown">
-            <InputLabel>Age</InputLabel>
+            <InputLabel>Country list</InputLabel>
             <Select
               variant="outlined"
-              label="Age"
+              label="Country list"
               value={country}
               onChange={handleChange}
             >
@@ -116,7 +117,8 @@ function App() {
         <h3>Live Cases by Country</h3>
         <Table countries={tableData} />
         {/* graph */}
-        {/* <h3>Worldwide new cases</h3> */}
+        <h3>Worldwide new cases</h3>
+        <LineGraph />
       </Card>
     </div>
   );
