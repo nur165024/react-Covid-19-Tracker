@@ -2,9 +2,8 @@ import React from "react";
 import "./Table.css";
 
 const Table = ({ countries }) => {
-  console.log(countries);
   return (
-    <div className="table">
+    <div className="table" style={{ marginBottom: "15px" }}>
       {countries.map(({ country, cases }, index) => (
         <tr key={index}>
           <td>
